@@ -33,8 +33,10 @@ export default function Modals({ settings, categories }) {
 
   return (
     <AnimatePresence>
+      {/* Background Overlay */}
       {hasOpenModal && (
         <motion.div
+          key="modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -44,8 +46,10 @@ export default function Modals({ settings, categories }) {
         />
       )}
 
+      {/* Side Menu */}
       {isMenuOpen && (
         <motion.div
+          key="mobile-menu"
           initial={{ x: "-100%" }}
           animate={{ x: 0 }}
           exit={{ x: "-100%" }}
@@ -174,8 +178,10 @@ export default function Modals({ settings, categories }) {
         </motion.div>
       )}
 
+      {/* Cart Modal */}
       {isCartOpen && (
         <motion.div
+          key="cart-modal"
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
@@ -221,8 +227,10 @@ export default function Modals({ settings, categories }) {
         </motion.div>
       )}
 
+      {/* Category Modal (Mobile view equivalent) */}
       {isCategoryOpen && (
         <motion.div
+          key="category-modal"
           initial={{ y: "-100%" }}
           animate={{ y: 0 }}
           exit={{ y: "-100%" }}
@@ -261,8 +269,10 @@ export default function Modals({ settings, categories }) {
         </motion.div>
       )}
 
+      {/* Search Modal */}
       {isSearchOpen && (
         <motion.div
+          key="search-modal"
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}

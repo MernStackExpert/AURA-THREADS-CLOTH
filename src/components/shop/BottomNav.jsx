@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Grid, ShoppingCart, User } from "lucide-react";
+import { Home, Grid, ShoppingBag, User, Store } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -29,46 +29,72 @@ export default function BottomNav() {
 
   const navItems = [
     { name: "Home", path: "/", icon: Home, action: null },
-    { name: "Shop", path: "#", icon: Grid, action: openCategory },
-    { name: "Cart", path: "#", icon: ShoppingCart, action: openCart },
+    { name: "Categories", path: "#", icon: Grid, action: openCategory },
+    { name: "Shop", path: "/shop", icon: Store, action: null },
+    { name: "Cart", path: "#", icon: ShoppingBag, action: openCart },
     { name: "Profile", path: "/login", icon: User, action: null },
   ];
 
   return (
     <nav
-      className={`md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl transition-transform duration-500 ease-in-out ${isVisible ? "translate-y-0" : "translate-y-full"}`}
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-[70] bg-background/85 backdrop-blur-2xl border-t border-border/30 transition-transform duration-500 ease-[0.22,1,0.36,1] ${
+        isVisible ? "translate-y-0" : "translate-y-full"
+      }`}
     >
-      <div className="flex items-center justify-around h-16 pb-safe">
+      <div className="flex items-center justify-around h-[72px] pb-safe relative px-2">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = pathname === item.path;
+
+          const content = (
+            <>
+              <div
+                className={`absolute top-0 left-1/2 -translate-x-1/2 h-[2px] bg-foreground transition-all duration-500 ease-out rounded-b-full ${
+                  isActive ? "w-6 opacity-100" : "w-0 opacity-0"
+                }`}
+              ></div>
+              <div className="relative mt-1">
+                <Icon
+                  className={`w-[22px] h-[22px] transition-all duration-500 ease-[0.22,1,0.36,1] ${
+                    isActive
+                      ? "text-foreground scale-110 translate-y-[-2px]"
+                      : "text-foreground/40 group-hover:text-foreground/70"
+                  }`}
+                  strokeWidth={1.5}
+                />
+                {item.name === "Cart" && (
+                  <span className="absolute -top-1.5 -right-2.5 bg-foreground text-background text-[9px] font-semibold flex items-center justify-center min-w-[16px] h-[16px] rounded-full px-1 shadow-sm transition-transform duration-300">
+                    0
+                  </span>
+                )}
+              </div>
+              <span
+                className={`text-[9px] font-medium tracking-[0.1em] uppercase mt-1.5 transition-all duration-300 ${
+                  isActive
+                    ? "text-foreground opacity-100"
+                    : "text-foreground/40 opacity-70"
+                }`}
+              >
+                {item.name}
+              </span>
+            </>
+          );
 
           return item.action ? (
             <button
               key={index}
               onClick={item.action}
-              className="flex flex-col items-center justify-center w-full h-full text-foreground/50 hover:text-foreground transition-colors relative"
+              className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
             >
-              <Icon className="w-5 h-5 mb-1" strokeWidth={1.5} />
-              <span className="text-[9px] font-medium tracking-widest uppercase">
-                {item.name}
-              </span>
-              {item.name === "Cart" && (
-                <span className="absolute top-2 right-1/4 w-3.5 h-3.5 bg-foreground text-background text-[8px] font-bold flex items-center justify-center rounded-full">
-                  0
-                </span>
-              )}
+              {content}
             </button>
           ) : (
             <Link
               key={index}
               href={item.path}
-              className={`flex flex-col items-center justify-center w-full h-full transition-colors ${isActive ? "text-foreground" : "text-foreground/50 hover:text-foreground"}`}
+              className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
             >
-              <Icon className="w-5 h-5 mb-1" strokeWidth={1.5} />
-              <span className="text-[9px] font-medium tracking-widest uppercase">
-                {item.name}
-              </span>
+              {content}
             </Link>
           );
         })}
