@@ -37,7 +37,7 @@ export default function Navbar({ settings, categories }) {
             className="md:hidden p-2 -ml-2 text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
             aria-label="Open Menu"
           >
-            <Menu className="w-5 h-5" strokeWidth={1.25} />
+            <Menu className="w-5 h-5" strokeWidth={1.5} />
           </button>
 
           <Link href="/" className="flex items-center cursor-pointer">
@@ -60,7 +60,7 @@ export default function Navbar({ settings, categories }) {
             <Link
               key={index}
               href={link.path}
-              className={`relative text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
+              className={`relative text-[13px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
                 pathname === link.path
                   ? "text-foreground"
                   : "text-foreground/60 hover:text-foreground"
@@ -80,7 +80,7 @@ export default function Navbar({ settings, categories }) {
           <div className="group h-full flex items-center cursor-pointer">
             <div className="relative py-2 flex items-center">
               <span
-                className={`text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 ${
+                className={`text-[13px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 ${
                   pathname.includes("/category")
                     ? "text-foreground"
                     : "text-foreground/60 group-hover:text-foreground"
@@ -132,7 +132,7 @@ export default function Navbar({ settings, categories }) {
             <Link
               key={index}
               href={link.path}
-              className={`relative text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
+              className={`relative text-[13px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
                 pathname === link.path
                   ? "text-foreground"
                   : "text-foreground/60 hover:text-foreground"
@@ -156,7 +156,7 @@ export default function Navbar({ settings, categories }) {
             aria-label="Search"
             className="text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
           >
-            <Search className="w-[18px] h-[18px]" strokeWidth={1.25} />
+            <Search className="w-[22px] h-[22px]" strokeWidth={1.5} />
           </button>
 
           <Link
@@ -164,7 +164,7 @@ export default function Navbar({ settings, categories }) {
             aria-label="Profile"
             className="text-foreground/70 hover:text-foreground transition-colors hidden md:block cursor-pointer"
           >
-            <User className="w-[18px] h-[18px]" strokeWidth={1.25} />
+            <User className="w-[22px] h-[22px]" strokeWidth={1.5} />
           </Link>
 
           {mounted && (
@@ -174,9 +174,9 @@ export default function Navbar({ settings, categories }) {
               className="text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
             >
               {theme === "dark" ? (
-                <Sun className="w-[18px] h-[18px]" strokeWidth={1.25} />
+                <Sun className="w-[22px] h-[22px]" strokeWidth={1.5} />
               ) : (
-                <Moon className="w-[18px] h-[18px]" strokeWidth={1.25} />
+                <Moon className="w-[22px] h-[22px]" strokeWidth={1.5} />
               )}
             </button>
           )}
@@ -186,7 +186,7 @@ export default function Navbar({ settings, categories }) {
             aria-label="Cart"
             className="relative text-foreground/70 hover:text-foreground transition-colors flex items-center cursor-pointer"
           >
-            <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.25} />
+            <ShoppingBag className="w-[22px] h-[22px]" strokeWidth={1.5} />
             <span className="absolute -top-1.5 -right-2 bg-foreground text-background text-[9px] font-medium flex items-center justify-center min-w-[15px] h-[15px] rounded-full px-1">
               0
             </span>
