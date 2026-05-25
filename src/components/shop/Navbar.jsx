@@ -2,15 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Menu,
-  Search,
-  ShoppingCart,
-  Sun,
-  Moon,
-  User,
-  ChevronDown,
-} from "lucide-react";
+import { Menu, Search, ShoppingBag, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useUIStore } from "@/store/useUIStore";
 import { useEffect, useState } from "react";
@@ -29,132 +21,173 @@ export default function Navbar({ settings, categories }) {
   const staticLinks = [
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
-    { name: "About Us", path: "/about" },
+  ];
+
+  const rightLinks = [
+    { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
 
   return (
-    <header className="sticky top-0 z-[80] w-full border-b border-border bg-background/90 backdrop-blur-2xl transition-colors duration-300">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-[80] w-full bg-background/95 backdrop-blur-md border-b border-border/20 transition-all duration-500">
+      <div className="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+        <div className="flex items-center gap-4 flex-1 md:flex-none">
           <button
             onClick={openMenu}
-            className="md:hidden p-2 -ml-2 text-foreground hover:text-accent transition-colors"
+            className="md:hidden p-2 -ml-2 text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
             aria-label="Open Menu"
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5" strokeWidth={1.25} />
           </button>
-          <Link href="/" className="flex items-center">
+
+          <Link href="/" className="flex items-center cursor-pointer">
             {logoUrl ? (
               <img
                 src={logoUrl}
                 alt={siteName}
-                className="h-8 md:h-10 w-auto object-contain"
+                className="h-6 md:h-7 w-auto object-contain"
               />
             ) : (
-              <span className="text-2xl md:text-3xl font-extrabold tracking-widest text-foreground uppercase">
+              <span className="text-lg md:text-xl font-semibold tracking-[0.15em] text-foreground uppercase">
                 {siteName}
               </span>
             )}
           </Link>
         </div>
 
-        <nav className="hidden md:flex items-center gap-10 h-full">
-          {staticLinks.slice(0, 2).map((link, index) => {
-            const isActive = pathname === link.path;
-            return (
-              <Link
-                key={index}
-                href={link.path}
-                className={`text-sm font-bold tracking-widest uppercase relative group py-8 transition-colors duration-300 ${isActive ? "text-accent" : "text-foreground/70 hover:text-foreground"}`}
-              >
-                {link.name}
-                <span
-                  className={`absolute bottom-6 left-0 h-[2px] bg-accent transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
-                ></span>
-              </Link>
-            );
-          })}
-
-          <div className="group relative h-full flex items-center cursor-pointer">
-            <span
-              className={`text-sm font-bold tracking-widest uppercase flex items-center gap-1 transition-colors duration-300 ${pathname.includes("/category") ? "text-accent" : "text-foreground/70 group-hover:text-foreground"}`}
+        <nav className="hidden md:flex items-center justify-center gap-10 h-full flex-1">
+          {staticLinks.map((link, index) => (
+            <Link
+              key={index}
+              href={link.path}
+              className={`relative text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
+                pathname === link.path
+                  ? "text-foreground"
+                  : "text-foreground/60 hover:text-foreground"
+              }`}
             >
-              Categories{" "}
-              <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
-            </span>
-            <span
-              className={`absolute bottom-6 left-0 h-[2px] bg-accent transition-all duration-300 ${pathname.includes("/category") ? "w-full" : "w-0 group-hover:w-full"}`}
-            ></span>
+              {link.name}
+              <span
+                className={`absolute bottom-0 left-0 w-full h-[1px] bg-foreground origin-center transition-transform duration-500 ease-out ${
+                  pathname === link.path
+                    ? "scale-x-100"
+                    : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              ></span>
+            </Link>
+          ))}
 
-            <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[650px] bg-card border border-border shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 grid grid-cols-3 gap-6 p-8 rounded-b-2xl">
-              {categories?.map((cat, index) => (
-                <Link
-                  key={cat._id || cat.slug || index}
-                  href={`/category/${cat.slug}`}
-                  className="flex items-center gap-2 group/item"
-                >
-                  <div className="w-2 h-2 rounded-full bg-border group-hover/item:bg-accent transition-colors"></div>
-                  <span className="text-sm font-bold text-foreground/80 group-hover/item:text-accent transition-colors uppercase tracking-wider">
-                    {cat.name}
-                  </span>
-                </Link>
-              ))}
+          <div className="group h-full flex items-center cursor-pointer">
+            <div className="relative py-2 flex items-center">
+              <span
+                className={`text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 ${
+                  pathname.includes("/category")
+                    ? "text-foreground"
+                    : "text-foreground/60 group-hover:text-foreground"
+                }`}
+              >
+                Collections
+              </span>
+              <span
+                className={`absolute bottom-0 left-0 w-full h-[1px] bg-foreground origin-center transition-transform duration-500 ease-out ${
+                  pathname.includes("/category")
+                    ? "scale-x-100"
+                    : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              ></span>
+            </div>
+
+            <div className="absolute top-20 left-0 w-full bg-background border-b border-border/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 ease-in-out shadow-sm cursor-default">
+              <div className="container mx-auto px-8 py-12">
+                <div className="grid grid-cols-4 gap-12">
+                  <div className="col-span-1 border-r border-foreground/10 pr-8">
+                    <h3 className="text-[10px] font-semibold tracking-[0.2em] uppercase text-foreground/50 mb-4">
+                      Discover
+                    </h3>
+                    <p className="text-[13px] text-foreground/80 leading-relaxed font-light">
+                      Explore our meticulously crafted pieces designed for the
+                      modern aesthetic.
+                    </p>
+                  </div>
+
+                  <div className="col-span-3 grid grid-cols-3 gap-y-6 gap-x-8">
+                    {categories?.map((cat) => (
+                      <Link
+                        key={cat._id || cat.slug}
+                        href={`/category/${cat.slug}`}
+                        className="group/cat block cursor-pointer w-fit"
+                      >
+                        <span className="text-[12px] uppercase tracking-[0.1em] font-medium text-foreground/70 group-hover/cat:text-foreground transition-colors duration-300">
+                          {cat.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {staticLinks.slice(2).map((link, index) => {
-            const isActive = pathname === link.path;
-            return (
-              <Link
-                key={index}
-                href={link.path}
-                className={`text-sm font-bold tracking-widest uppercase relative group py-8 transition-colors duration-300 ${isActive ? "text-accent" : "text-foreground/70 hover:text-foreground"}`}
-              >
-                {link.name}
-                <span
-                  className={`absolute bottom-6 left-0 h-[2px] bg-accent transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
-                ></span>
-              </Link>
-            );
-          })}
+          {rightLinks.map((link, index) => (
+            <Link
+              key={index}
+              href={link.path}
+              className={`relative text-[11px] font-medium tracking-[0.15em] uppercase transition-colors duration-300 py-2 group cursor-pointer ${
+                pathname === link.path
+                  ? "text-foreground"
+                  : "text-foreground/60 hover:text-foreground"
+              }`}
+            >
+              {link.name}
+              <span
+                className={`absolute bottom-0 left-0 w-full h-[1px] bg-foreground origin-center transition-transform duration-500 ease-out ${
+                  pathname === link.path
+                    ? "scale-x-100"
+                    : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              ></span>
+            </Link>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-2 md:gap-5">
+        <div className="flex items-center justify-end gap-5 flex-1 md:flex-none">
           <button
             onClick={openSearch}
             aria-label="Search"
-            className="p-2 text-foreground/70 hover:text-accent transition-colors"
+            className="text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
           >
-            <Search className="w-5 h-5 md:w-6 md:h-6" />
+            <Search className="w-[18px] h-[18px]" strokeWidth={1.25} />
           </button>
+
           <Link
             href="/login"
             aria-label="Profile"
-            className="p-2 text-foreground/70 hover:text-accent transition-colors hidden md:block"
+            className="text-foreground/70 hover:text-foreground transition-colors hidden md:block cursor-pointer"
           >
-            <User className="w-5 h-5 md:w-6 md:h-6" />
+            <User className="w-[18px] h-[18px]" strokeWidth={1.25} />
           </Link>
+
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               aria-label="Toggle Theme"
-              className="p-2 text-foreground/70 hover:text-accent transition-colors"
+              className="text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
             >
               {theme === "dark" ? (
-                <Sun className="w-5 h-5 md:w-6 md:h-6" />
+                <Sun className="w-[18px] h-[18px]" strokeWidth={1.25} />
               ) : (
-                <Moon className="w-5 h-5 md:w-6 md:h-6" />
+                <Moon className="w-[18px] h-[18px]" strokeWidth={1.25} />
               )}
             </button>
           )}
+
           <button
             onClick={openCart}
             aria-label="Cart"
-            className="p-2 relative text-foreground/70 hover:text-accent transition-colors"
+            className="relative text-foreground/70 hover:text-foreground transition-colors flex items-center cursor-pointer"
           >
-            <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
-            <span className="absolute top-0 right-0 w-4 h-4 md:w-5 md:h-5 bg-accent text-white text-[10px] md:text-xs font-bold flex items-center justify-center rounded-full">
+            <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.25} />
+            <span className="absolute -top-1.5 -right-2 bg-foreground text-background text-[9px] font-medium flex items-center justify-center min-w-[15px] h-[15px] rounded-full px-1">
               0
             </span>
           </button>
