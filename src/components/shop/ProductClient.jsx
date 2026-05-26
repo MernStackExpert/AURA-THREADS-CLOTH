@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
@@ -10,8 +12,11 @@ import {
   RefreshCw,
   ShoppingBag,
   Zap,
+  ArrowRight,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import ProductCard from "./ProductCard";
+import useCartStore from "@/store/useCartStore";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -114,6 +119,10 @@ function Accordion({ title, children, isOpen, onClick }) {
 }
 
 export default function ProductClient({ product, relatedProducts = [] }) {
+  const router = useRouter();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const setBuyNowItem = useCartStore((state) => state.setBuyNowItem);
+
   const [selectedImage, setSelectedImage] = useState(
     product.media?.images?.[0] || product.media?.thumbnail,
   );
@@ -134,6 +143,33 @@ export default function ProductClient({ product, relatedProducts = [] }) {
         setSelectedImage(variant.image);
       }
     }
+  };
+
+  const validateSelection = () => {
+    if (
+      attributes.length > 0 &&
+      Object.keys(selectedAttributes).length !== attributes.length
+    ) {
+      toast.error("Please select all options");
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddToCart = () => {
+    if (!validateSelection()) return;
+    const size = selectedAttributes["Size"] || null;
+    const color = selectedAttributes["Color"] || null;
+    addToCart(product, size, color);
+    toast.success("Added to cart");
+  };
+
+  const handleBuyNow = () => {
+    if (!validateSelection()) return;
+    const size = selectedAttributes["Size"] || null;
+    const color = selectedAttributes["Color"] || null;
+    setBuyNowItem(product, size, color);
+    router.push("/checkout?mode=buynow");
   };
 
   const handleAccordion = (id) => {
@@ -275,6 +311,7 @@ export default function ProductClient({ product, relatedProducts = [] }) {
 
             <motion.div variants={fadeUp} className="flex flex-col gap-4 mb-10">
               <motion.button
+                onClick={handleBuyNow}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-foreground text-background text-[11px] font-bold tracking-[0.2em] uppercase py-4 flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors cursor-pointer"
               >
@@ -283,6 +320,7 @@ export default function ProductClient({ product, relatedProducts = [] }) {
               </motion.button>
 
               <motion.button
+                onClick={handleAddToCart}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-transparent text-foreground border border-foreground text-[11px] font-bold tracking-[0.2em] uppercase py-4 flex items-center justify-center gap-2 hover:bg-foreground hover:text-background transition-colors cursor-pointer"
               >
@@ -356,6 +394,17 @@ export default function ProductClient({ product, relatedProducts = [] }) {
               </h2>
               <div className="w-12 h-[1px] bg-foreground mt-4"></div>
             </div>
+
+            <Link
+              href="/product/shop"
+              className="group flex items-center gap-2 text-[10px] md:text-[11px] font-medium uppercase tracking-[0.2em] text-foreground/60 hover:text-foreground transition-colors pb-1"
+            >
+              View All
+              <ArrowRight
+                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                strokeWidth={1.5}
+              />
+            </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-10 md:gap-x-6 md:gap-y-14">
             {relatedProducts.map((p) => (
