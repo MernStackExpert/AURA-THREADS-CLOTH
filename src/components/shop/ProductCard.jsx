@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
             {product.brand}
           </span>
         )}
-        <Link href={`/product/${product.slug}`} className="w-fit">
+        <Link href={`/product/shop/${product.slug}`} className="w-fit">
           <h3 className="text-[13px] text-foreground font-light tracking-wide truncate transition-colors hover:text-foreground/60">
             {product.name}
           </h3>
