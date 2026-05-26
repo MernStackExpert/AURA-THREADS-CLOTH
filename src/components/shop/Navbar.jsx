@@ -121,7 +121,7 @@ export default function Navbar({ settings, categories }) {
                     {categories?.map((cat) => (
                       <Link
                         key={cat._id || cat.slug}
-                        href={`/category/${cat.slug}`}
+                        href={`/product/shop?category=${cat.slug}`}
                         className="group/cat block cursor-pointer w-fit"
                       >
                         <span className="text-[12px] uppercase tracking-[0.1em] font-medium text-foreground/70 group-hover/cat:text-foreground transition-colors duration-300">

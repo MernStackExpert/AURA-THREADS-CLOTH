@@ -9,18 +9,23 @@ import toast from "react-hot-toast";
 
 export default function CartModal({ closeAll, customEase }) {
   const { cartItems, updateQuantity, removeFromCart } = useCartStore();
+
   const totalItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0,
   );
+
   const subTotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
 
   const handleUpdateQuantity = (item, type) => {
+    // যদি maxStock undefined বা 0 হয়, তবে বাই-ডিফল্ট 10 ধরে নেব
+    const maximumStock = item.maxStock > 0 ? item.maxStock : 10;
+
     if (type === "increase") {
-      if (item.quantity >= item.maxStock) {
+      if (item.quantity >= maximumStock) {
         toast.error("Maximum stock limit reached");
         return;
       }

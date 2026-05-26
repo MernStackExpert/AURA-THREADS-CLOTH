@@ -35,7 +35,7 @@ const useCartStore = create(
                 (v) => v.size === selectedSize && v.color === selectedColor,
               )?.stock ||
               product.inventory?.stock ||
-              1,
+              10,
           };
           set({ cartItems: [...cart, newItem] });
         }
@@ -64,17 +64,16 @@ const useCartStore = create(
 
         if (itemIndex !== -1) {
           const updatedCart = [...cart];
-          if (
-            type === "increase" &&
-            updatedCart[itemIndex].quantity < updatedCart[itemIndex].maxStock
-          ) {
+          const currentItem = updatedCart[itemIndex];
+          const maximumStock =
+            currentItem.maxStock > 0 ? currentItem.maxStock : 10;
+
+          if (type === "increase" && currentItem.quantity < maximumStock) {
             updatedCart[itemIndex].quantity += 1;
-          } else if (
-            type === "decrease" &&
-            updatedCart[itemIndex].quantity > 1
-          ) {
+          } else if (type === "decrease" && currentItem.quantity > 1) {
             updatedCart[itemIndex].quantity -= 1;
           }
+
           set({ cartItems: updatedCart });
         }
       },
