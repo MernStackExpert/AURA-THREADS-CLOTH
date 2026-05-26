@@ -17,3 +17,13 @@ export const getCategories = async (isTop = false) => {
     return [];
   }
 };
+
+
+export const getBanners = async (position) => {
+  try {
+    const response = await api.get(`/banners${position ? `?position=${position}` : ""}`);
+    return response.data?.banners || [];
+  } catch (error) {
+    return [];
+  }
+};
