@@ -42,6 +42,11 @@ const useCartStore = create(
       },
 
       setBuyNowItem: (product, selectedSize, selectedColor) => {
+        if (!product) {
+          set({ buyNowItem: null });
+          return;
+        }
+
         const item = {
           id: product._id,
           slug: product.slug,
@@ -51,6 +56,12 @@ const useCartStore = create(
           size: selectedSize,
           color: selectedColor,
           quantity: 1,
+          maxStock:
+            product.variants?.find(
+              (v) => v.size === selectedSize && v.color === selectedColor,
+            )?.stock ||
+            product.inventory?.stock ||
+            10,
         };
         set({ buyNowItem: item });
       },
