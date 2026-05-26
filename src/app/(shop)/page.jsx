@@ -9,8 +9,8 @@ export const metadata = {
 
 export default async function HomePage() {
   const [mainBanners, sideBanners] = await Promise.all([
-    getBanners("main-slider"),
-    getBanners("side-slider"),
+    getBanners("main-banner"),
+    getBanners("side-banner"),
   ]);
 
   return (

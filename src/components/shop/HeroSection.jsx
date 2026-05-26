@@ -22,7 +22,7 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
   if (!mainBanners.length && !sideBanners.length) return null;
 
   return (
-    <section className="w-full h-[85vh] md:h-[80vh] min-h-[600px] flex flex-col md:flex-row bg-background">
+    <section className="w-full h-[55vh] min-h-[400px] md:h-[80vh] md:min-h-[600px] flex flex-col md:flex-row bg-background">
       <div className="relative w-full md:w-2/3 h-full overflow-hidden group">
         <AnimatePresence mode="sync">
           {activeMainBanner && (
@@ -42,11 +42,11 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
                 className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, 66vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-              <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16">
+              <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-16">
                 <motion.div
-                  initial={{ y: 30, opacity: 0 }}
+                  initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{
                     delay: 0.3,
@@ -56,14 +56,14 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
                   className="max-w-2xl"
                 >
                   {activeMainBanner.title && (
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-light text-white uppercase tracking-[0.15em] leading-tight mb-6">
+                    <h1 className="text-2xl md:text-5xl lg:text-6xl font-light text-white uppercase tracking-[0.15em] leading-snug md:leading-tight mb-4 md:mb-6">
                       {activeMainBanner.title}
                     </h1>
                   )}
                   {activeMainBanner.link && (
                     <Link
                       href={activeMainBanner.link}
-                      className="inline-flex items-center justify-center px-10 py-4 border border-white text-white text-[11px] font-semibold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500"
+                      className="inline-flex items-center justify-center px-6 md:px-10 py-3 md:py-4 border border-white text-white text-[10px] md:text-[11px] font-semibold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-500"
                     >
                       {activeMainBanner.buttonText || "Discover Now"}
                     </Link>
@@ -75,7 +75,7 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
         </AnimatePresence>
 
         {mainBanners.length > 1 && (
-          <div className="absolute bottom-8 right-8 md:bottom-16 md:right-16 flex gap-3 z-20">
+          <div className="absolute bottom-6 right-6 md:bottom-16 md:right-16 flex gap-2 md:gap-3 z-20">
             {mainBanners.map((_, idx) => (
               <button
                 key={idx}
@@ -86,8 +86,8 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
                 <div
                   className={`h-[1px] transition-all duration-500 ease-out ${
                     currentIndex === idx
-                      ? "w-12 bg-white"
-                      : "w-6 bg-white/40 group-hover:bg-white/70"
+                      ? "w-8 md:w-12 bg-white"
+                      : "w-4 md:w-6 bg-white/40 group-hover:bg-white/70"
                   }`}
                 />
               </button>
