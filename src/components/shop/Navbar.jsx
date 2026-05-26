@@ -27,7 +27,7 @@ export default function Navbar({ settings, categories }) {
 
   const staticLinks = [
     { name: "Home", path: "/" },
-    { name: "Shop", path: "/shop" },
+    { name: "Shop", path: "/product/shop" },
   ];
 
   const rightLinks = [

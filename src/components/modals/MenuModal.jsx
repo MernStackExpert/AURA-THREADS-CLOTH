@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import {
   FaFacebookF,
@@ -19,6 +20,16 @@ export default function MenuModal({
   social,
   customEase,
 }) {
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category");
+
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/shop" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
+
   return (
     <motion.div
       key="mobile-menu"
@@ -26,6 +37,7 @@ export default function MenuModal({
       animate={{ x: 0 }}
       exit={{ x: "-100%" }}
       transition={{ duration: 0.5, ease: customEase }}
+      onClick={(e) => e.stopPropagation()}
       className="fixed top-0 left-0 bottom-0 z-[100] w-[85%] max-w-sm bg-background shadow-2xl flex flex-col border-r border-border/20 cursor-default"
     >
       <div className="flex items-center justify-between p-8">
@@ -43,13 +55,12 @@ export default function MenuModal({
 
       <div className="flex-grow overflow-y-auto px-8 py-4 flex flex-col gap-6">
         <div className="flex flex-col gap-5">
-          {["Home", "Shop", "About", "Contact"].map((item, idx) => {
-            const paths = ["/", "/shop", "/about", "/contact"];
-            const isActive = pathname === paths[idx];
+          {navLinks.map((link, idx) => {
+            const isActive = pathname === link.path && !currentCategory;
             return (
               <Link
                 key={idx}
-                href={paths[idx]}
+                href={link.path}
                 onClick={closeAll}
                 className={`text-[22px] font-light tracking-wide transition-all duration-300 w-fit cursor-pointer ${
                   isActive
@@ -57,7 +68,7 @@ export default function MenuModal({
                     : "text-foreground/60 hover:text-foreground hover:translate-x-2"
                 }`}
               >
-                {item}
+                {link.name}
               </Link>
             );
           })}
@@ -70,11 +81,11 @@ export default function MenuModal({
           </span>
           <div className="flex flex-col gap-4">
             {categories?.map((cat) => {
-              const isActive = pathname === `/category/${cat.slug}`;
+              const isActive = currentCategory === cat.slug;
               return (
                 <Link
                   key={cat._id || cat.slug}
-                  href={`/category/${cat.slug}`}
+                  href={`/product/shop?category=${cat.slug}`}
                   onClick={closeAll}
                   className={`text-[15px] font-light tracking-wider transition-all duration-300 w-fit cursor-pointer ${
                     isActive
