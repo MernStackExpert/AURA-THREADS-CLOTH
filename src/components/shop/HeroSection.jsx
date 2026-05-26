@@ -31,7 +31,7 @@ export default function HeroSection({ mainBanners = [], sideBanners = [] }) {
   if (!mainBanners.length && !sideBanners.length) return null;
 
   return (
-    <section className="w-full h-[55vh] min-h-[400px] md:h-[80vh] md:min-h-[600px] flex flex-col md:flex-row bg-background">
+    <section className="w-full h-[50vh] min-h-[350px] md:h-[80vh] md:min-h-[600px] flex flex-col md:flex-row bg-background">
       <div className="relative w-full md:w-2/3 h-full overflow-hidden group">
         <AnimatePresence mode="sync">
           {activeMain && (
