@@ -8,3 +8,12 @@ export const getProductBySlug = async (slug) => {
     return null;
   }
 };
+
+export const getRelatedProducts = async (category) => {
+  try {
+    const response = await api.get(`/products?category=${category}&limit=4`);
+    return response.data?.products || [];
+  } catch (error) {
+    return [];
+  }
+};

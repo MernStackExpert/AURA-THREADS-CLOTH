@@ -17,7 +17,7 @@ export default function ProductCard({ product }) {
     <div className="group flex flex-col relative">
       <div className="relative w-full aspect-[3/4] overflow-hidden bg-foreground/5 mb-4">
         <Link
-          href={`/product/${product.slug}`}
+          href={`/product/shop/${product.slug}`}
           className="absolute inset-0 z-0"
         >
           <Image
