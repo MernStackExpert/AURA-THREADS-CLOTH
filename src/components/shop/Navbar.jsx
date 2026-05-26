@@ -30,7 +30,7 @@ export default function Navbar({ settings, categories }) {
 
   return (
     <header className="sticky top-0 z-[80] w-full bg-background/95 backdrop-blur-md border-b border-border/20 transition-all duration-500">
-      <div className="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+      <div className="my-container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1 md:flex-none">
           <button
             onClick={openMenu}

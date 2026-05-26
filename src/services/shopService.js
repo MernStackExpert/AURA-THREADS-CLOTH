@@ -18,11 +18,21 @@ export const getCategories = async (isTop = false) => {
   }
 };
 
-
 export const getBanners = async (position) => {
   try {
-    const response = await api.get(`/banners${position ? `?position=${position}` : ""}`);
+    const response = await api.get(
+      `/banners${position ? `?position=${position}` : ""}`,
+    );
     return response.data?.banners || [];
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getTopCategories = async () => {
+  try {
+    const response = await api.get("/categories?isTop=true");
+    return response.data?.categories || [];
   } catch (error) {
     return [];
   }
