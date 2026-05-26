@@ -37,3 +37,13 @@ export const getTopCategories = async () => {
     return [];
   }
 };
+
+
+export const getHomepageSections = async () => {
+  try {
+    const response = await api.get('/sections/homepage');
+    return response.data?.data || [];
+  } catch (error) {
+    return [];
+  }
+};
