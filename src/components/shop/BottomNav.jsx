@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Home, Grid, ShoppingBag, User, Store } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
+import useCartStore from "@/store/useCartStore";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -11,8 +12,16 @@ export default function BottomNav() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  const cartItems = useCartStore((state) => state.cartItems);
+  const totalCartItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
@@ -62,9 +71,9 @@ export default function BottomNav() {
                   }`}
                   strokeWidth={1.5}
                 />
-                {item.name === "Cart" && (
+                {mounted && item.name === "Cart" && totalCartItems > 0 && (
                   <span className="absolute -top-1.5 -right-2.5 bg-foreground text-background text-[9px] font-semibold flex items-center justify-center min-w-[16px] h-[16px] rounded-full px-1 shadow-sm transition-transform duration-300">
-                    0
+                    {totalCartItems}
                   </span>
                 )}
               </div>

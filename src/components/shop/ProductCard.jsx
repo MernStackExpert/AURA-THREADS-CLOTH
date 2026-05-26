@@ -3,14 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import useCartStore from "@/store/useCartStore";
+import toast from "react-hot-toast";
 
 export default function ProductCard({ product }) {
   const { price, oldPrice, discountPercentage } = product.pricing || {};
   const isNew = product.status?.isNew;
 
+  const addToCart = useCartStore((state) => state.addToCart);
+
   const handleQuickAdd = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    addToCart(product, null, null);
+    toast.success("Added to cart");
   };
 
   return (
@@ -47,7 +54,7 @@ export default function ProductCard({ product }) {
         <div className="hidden md:flex absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-20">
           <button
             onClick={handleQuickAdd}
-            className="w-full bg-white/95 backdrop-blur-sm text-black text-[11px] font-bold tracking-[0.2em] uppercase py-3.5 flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors duration-300"
+            className="w-full bg-white/95 backdrop-blur-sm text-black text-[11px] font-bold tracking-[0.2em] uppercase py-3.5 flex items-center justify-center gap-2 hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer"
           >
             <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
             Quick Add
@@ -56,7 +63,7 @@ export default function ProductCard({ product }) {
 
         <button
           onClick={handleQuickAdd}
-          className="md:hidden absolute bottom-3 right-3 w-9 h-9 bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-sm text-black hover:bg-black hover:text-white transition-colors z-20"
+          className="md:hidden absolute bottom-3 right-3 w-9 h-9 bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-sm text-black hover:bg-black hover:text-white transition-colors z-20 cursor-pointer"
         >
           <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
         </button>

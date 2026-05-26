@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, Search, ShoppingBag, Sun, Moon, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useUIStore } from "@/store/useUIStore";
+import useCartStore from "@/store/useCartStore";
 import { useEffect, useState } from "react";
 
 export default function Navbar({ settings, categories }) {
@@ -12,11 +13,17 @@ export default function Navbar({ settings, categories }) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { openMenu, openCart, openSearch } = useUIStore();
+  const cartItems = useCartStore((state) => state.cartItems);
 
   useEffect(() => setMounted(true), []);
 
   const logoUrl = settings?.branding?.logo;
   const siteName = settings?.branding?.siteName || "AURA THREADS";
+
+  const totalCartItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
   const staticLinks = [
     { name: "Home", path: "/" },
@@ -187,9 +194,11 @@ export default function Navbar({ settings, categories }) {
             className="relative text-foreground/70 hover:text-foreground transition-colors flex items-center cursor-pointer"
           >
             <ShoppingBag className="w-[22px] h-[22px]" strokeWidth={1.5} />
-            <span className="absolute -top-1.5 -right-2 bg-foreground text-background text-[9px] font-medium flex items-center justify-center min-w-[15px] h-[15px] rounded-full px-1">
-              0
-            </span>
+            {mounted && totalCartItems > 0 && (
+              <span className="absolute -top-1.5 -right-2 bg-foreground text-background text-[9px] font-medium flex items-center justify-center min-w-[15px] h-[15px] rounded-full px-1">
+                {totalCartItems}
+              </span>
+            )}
           </button>
         </div>
       </div>

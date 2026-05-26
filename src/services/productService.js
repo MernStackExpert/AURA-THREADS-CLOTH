@@ -17,3 +17,16 @@ export const getRelatedProducts = async (category) => {
     return [];
   }
 };
+
+export const searchProducts = async (query = "", limit = 4) => {
+  try {
+    const endpoint = query
+      ? `/products?search=${encodeURIComponent(query)}&limit=${limit}`
+      : `/products?limit=${limit}&sortBy=totalSold&sortOrder=desc`;
+
+    const response = await api.get(endpoint);
+    return response.data?.products || [];
+  } catch (error) {
+    return [];
+  }
+};
