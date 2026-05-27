@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Home, Grid, ShoppingBag, User, Store } from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import useCartStore from "@/store/useCartStore";
+import useAuthStore from "@/store/useAuthStore";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -15,6 +17,8 @@ export default function BottomNav() {
   const [mounted, setMounted] = useState(false);
 
   const cartItems = useCartStore((state) => state.cartItems);
+  const { isAuthenticated, user } = useAuthStore();
+
   const totalCartItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0,
@@ -36,12 +40,20 @@ export default function BottomNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  // ডাইনামিক প্রোফাইল পাথ তৈরি করা হলো
+  const profilePath =
+    mounted && isAuthenticated
+      ? user?.role === "admin"
+        ? "/admin"
+        : "/my-dashboard"
+      : "/login";
+
   const navItems = [
     { name: "Home", path: "/", icon: Home, action: null },
     { name: "Categories", path: "#", icon: Grid, action: openCategory },
-    { name: "Shop", path: "/shop", icon: Store, action: null },
+    { name: "Shop", path: "/product/shop", icon: Store, action: null }, // পাথ ঠিক করা হয়েছে
     { name: "Cart", path: "#", icon: ShoppingBag, action: openCart },
-    { name: "Profile", path: "/login", icon: User, action: null },
+    { name: "Profile", path: profilePath, icon: User, action: null },
   ];
 
   return (
@@ -53,7 +65,9 @@ export default function BottomNav() {
       <div className="flex items-center justify-around h-[72px] pb-safe relative px-2">
         {navItems.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.path;
+          const isActive =
+            pathname === item.path ||
+            (item.name === "Profile" && pathname.includes(profilePath));
 
           const content = (
             <>
@@ -63,14 +77,35 @@ export default function BottomNav() {
                 }`}
               ></div>
               <div className="relative mt-1">
-                <Icon
-                  className={`w-[22px] h-[22px] transition-all duration-500 ease-[0.22,1,0.36,1] ${
-                    isActive
-                      ? "text-foreground scale-110 translate-y-[-2px]"
-                      : "text-foreground/40 group-hover:text-foreground/70"
-                  }`}
-                  strokeWidth={1.5}
-                />
+                {mounted &&
+                item.name === "Profile" &&
+                isAuthenticated &&
+                user?.image ? (
+                  <div
+                    className={`relative w-[22px] h-[22px] rounded-full overflow-hidden transition-all duration-500 ease-[0.22,1,0.36,1] ${
+                      isActive
+                        ? "scale-110 translate-y-[-2px] border border-foreground"
+                        : "border border-border/40 group-hover:border-foreground/50"
+                    }`}
+                  >
+                    <Image
+                      src={user.image}
+                      alt={user.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <Icon
+                    className={`w-[22px] h-[22px] transition-all duration-500 ease-[0.22,1,0.36,1] ${
+                      isActive
+                        ? "text-foreground scale-110 translate-y-[-2px]"
+                        : "text-foreground/40 group-hover:text-foreground/70"
+                    }`}
+                    strokeWidth={1.5}
+                  />
+                )}
+
                 {mounted && item.name === "Cart" && totalCartItems > 0 && (
                   <span className="absolute -top-1.5 -right-2.5 bg-foreground text-background text-[9px] font-semibold flex items-center justify-center min-w-[16px] h-[16px] rounded-full px-1 shadow-sm transition-transform duration-300">
                     {totalCartItems}

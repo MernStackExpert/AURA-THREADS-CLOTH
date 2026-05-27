@@ -1,5 +1,6 @@
 import CheckoutClient from "@/components/shop/CheckoutClient";
 import api from "@/services/api";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Secure Checkout | Aura Threads",
@@ -21,7 +22,9 @@ export default async function CheckoutPage() {
   return (
     <main className="w-full bg-background min-h-screen pt-24 md:pt-32 pb-16 md:pb-24">
       <div className="my-container">
-        <CheckoutClient settings={settings} />
+       <Suspense fallback={<div>Loading checkout...</div>}>
+          <CheckoutClient settings={settings} />
+        </Suspense>
       </div>
     </main>
   );

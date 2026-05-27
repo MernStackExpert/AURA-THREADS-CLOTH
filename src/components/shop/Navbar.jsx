@@ -1,21 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingBag, Sun, Moon, User } from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Menu,
+  Search,
+  ShoppingBag,
+  Sun,
+  Moon,
+  User,
+  LogOut,
+  LayoutDashboard,
+  ShieldCheck,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useUIStore } from "@/store/useUIStore";
 import useCartStore from "@/store/useCartStore";
-import { useEffect, useState } from "react";
+import useAuthStore from "@/store/useAuthStore";
+import { useEffect, useState, useRef } from "react";
 
 export default function Navbar({ settings, categories }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
   const { openMenu, openCart, openSearch } = useUIStore();
   const cartItems = useCartStore((state) => state.cartItems);
+  const { isAuthenticated, user, logout } = useAuthStore();
 
-  useEffect(() => setMounted(true), []);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const logoUrl = settings?.branding?.logo;
   const siteName = settings?.branding?.siteName || "AURA THREADS";
@@ -24,6 +53,12 @@ export default function Navbar({ settings, categories }) {
     (total, item) => total + item.quantity,
     0,
   );
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileOpen(false);
+    router.push("/login");
+  };
 
   const staticLinks = [
     { name: "Home", path: "/" },
@@ -166,13 +201,87 @@ export default function Navbar({ settings, categories }) {
             <Search className="w-[22px] h-[22px]" strokeWidth={1.5} />
           </button>
 
-          <Link
-            href="/login"
-            aria-label="Profile"
-            className="text-foreground/70 hover:text-foreground transition-colors hidden md:block cursor-pointer"
-          >
-            <User className="w-[22px] h-[22px]" strokeWidth={1.5} />
-          </Link>
+          {mounted && isAuthenticated && user ? (
+            <div className="relative hidden md:block" ref={dropdownRef}>
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="relative w-7 h-7 rounded-full overflow-hidden border border-border/40 hover:border-foreground transition-colors focus:outline-none flex items-center justify-center bg-foreground/5 cursor-pointer"
+              >
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <User
+                    className="w-[18px] h-[18px] text-foreground/80"
+                    strokeWidth={1.5}
+                  />
+                )}
+              </button>
+
+              <div
+                className={`absolute top-full right-0 mt-6 w-56 bg-background border border-border/20 shadow-2xl transition-all duration-300 origin-top-right ${
+                  isProfileOpen
+                    ? "opacity-100 scale-100 visible"
+                    : "opacity-0 scale-95 invisible"
+                }`}
+              >
+                <div className="p-5 border-b border-border/10 bg-foreground/[0.02]">
+                  <p className="text-[13px] font-semibold text-foreground truncate">
+                    {user.name}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/50 mt-1">
+                    {user.role}
+                  </p>
+                </div>
+                <div className="flex flex-col py-2">
+                  {user.role === "admin" ? (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-3 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-colors"
+                    >
+                      <ShieldCheck
+                        className="w-[18px] h-[18px]"
+                        strokeWidth={1.5}
+                      />
+                      Atlas Admin
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/my-dashboard"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-3 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-colors"
+                    >
+                      <LayoutDashboard
+                        className="w-[18px] h-[18px]"
+                        strokeWidth={1.5}
+                      />
+                      My Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.15em] text-red-500/80 hover:text-red-600 hover:bg-red-500/10 transition-colors w-full text-left cursor-pointer"
+                  >
+                    <LogOut className="w-[18px] h-[18px]" strokeWidth={1.5} />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              aria-label="Profile"
+              className="text-foreground/70 hover:text-foreground transition-colors hidden md:block cursor-pointer"
+            >
+              <User className="w-[22px] h-[22px]" strokeWidth={1.5} />
+            </Link>
+          )}
 
           {mounted && (
             <button
