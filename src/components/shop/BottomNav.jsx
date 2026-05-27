@@ -2,22 +2,36 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Home, Grid, ShoppingBag, User, Store } from "lucide-react";
+import {
+  Home,
+  Grid,
+  ShoppingBag,
+  User,
+  Store,
+  ShieldCheck,
+  LayoutDashboard,
+  LogOut,
+  X,
+} from "lucide-react";
 import { useUIStore } from "@/store/useUIStore";
 import useCartStore from "@/store/useCartStore";
 import useAuthStore from "@/store/useAuthStore";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function BottomNav() {
   const { openCategory, openCart } = useUIStore();
   const pathname = usePathname();
+  const router = useRouter();
+
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const cartItems = useCartStore((state) => state.cartItems);
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   const totalCartItems = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -30,6 +44,7 @@ export default function BottomNav() {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         setIsVisible(false);
+        setIsProfileModalOpen(false);
       } else {
         setIsVisible(true);
       }
@@ -40,7 +55,20 @@ export default function BottomNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  // ডাইনামিক প্রোফাইল পাথ তৈরি করা হলো
+  const handleLogout = () => {
+    logout();
+    setIsProfileModalOpen(false);
+    router.push("/login");
+  };
+
+  const handleProfileClick = () => {
+    if (isAuthenticated) {
+      setIsProfileModalOpen(true);
+    } else {
+      router.push("/login");
+    }
+  };
+
   const profilePath =
     mounted && isAuthenticated
       ? user?.role === "admin"
@@ -51,98 +79,184 @@ export default function BottomNav() {
   const navItems = [
     { name: "Home", path: "/", icon: Home, action: null },
     { name: "Categories", path: "#", icon: Grid, action: openCategory },
-    { name: "Shop", path: "/product/shop", icon: Store, action: null }, // পাথ ঠিক করা হয়েছে
+    { name: "Shop", path: "/product/shop", icon: Store, action: null },
     { name: "Cart", path: "#", icon: ShoppingBag, action: openCart },
-    { name: "Profile", path: profilePath, icon: User, action: null },
+    {
+      name: "Profile",
+      path: profilePath,
+      icon: User,
+      action: handleProfileClick,
+    },
   ];
 
   return (
-    <nav
-      className={`md:hidden fixed bottom-0 left-0 right-0 z-[70] bg-background/85 backdrop-blur-2xl border-t border-border/30 transition-transform duration-500 ease-[0.22,1,0.36,1] ${
-        isVisible ? "translate-y-0" : "translate-y-full"
-      }`}
-    >
-      <div className="flex items-center justify-around h-[72px] pb-safe relative px-2">
-        {navItems.map((item, index) => {
-          const Icon = item.icon;
-          const isActive =
-            pathname === item.path ||
-            (item.name === "Profile" && pathname.includes(profilePath));
+    <>
+      <AnimatePresence>
+        {isProfileModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsProfileModalOpen(false)}
+              className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm md:hidden"
+            />
 
-          const content = (
-            <>
-              <div
-                className={`absolute top-0 left-1/2 -translate-x-1/2 h-[2px] bg-foreground transition-all duration-500 ease-out rounded-b-full ${
-                  isActive ? "w-6 opacity-100" : "w-0 opacity-0"
-                }`}
-              ></div>
-              <div className="relative mt-1">
-                {mounted &&
-                item.name === "Profile" &&
-                isAuthenticated &&
-                user?.image ? (
-                  <div
-                    className={`relative w-[22px] h-[22px] rounded-full overflow-hidden transition-all duration-500 ease-[0.22,1,0.36,1] ${
-                      isActive
-                        ? "scale-110 translate-y-[-2px] border border-foreground"
-                        : "border border-border/40 group-hover:border-foreground/50"
-                    }`}
-                  >
-                    <Image
-                      src={user.image}
-                      alt={user.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <Icon
-                    className={`w-[22px] h-[22px] transition-all duration-500 ease-[0.22,1,0.36,1] ${
-                      isActive
-                        ? "text-foreground scale-110 translate-y-[-2px]"
-                        : "text-foreground/40 group-hover:text-foreground/70"
-                    }`}
-                    strokeWidth={1.5}
-                  />
-                )}
-
-                {mounted && item.name === "Cart" && totalCartItems > 0 && (
-                  <span className="absolute -top-1.5 -right-2.5 bg-foreground text-background text-[9px] font-semibold flex items-center justify-center min-w-[16px] h-[16px] rounded-full px-1 shadow-sm transition-transform duration-300">
-                    {totalCartItems}
-                  </span>
-                )}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed bottom-[72px] left-0 right-0 z-[65] bg-background border-t border-border/20 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] rounded-t-2xl pb-safe md:hidden overflow-hidden"
+            >
+              <div className="flex items-center justify-between p-5 border-b border-border/10 bg-foreground/[0.02]">
+                <div className="flex flex-col">
+                  <p className="text-[14px] font-semibold text-foreground truncate">
+                    {user?.name}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/50 mt-1">
+                    {user?.role}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsProfileModalOpen(false)}
+                  className="p-2 -mr-2 text-foreground/60 hover:text-foreground transition-colors"
+                >
+                  <X className="w-5 h-5" strokeWidth={1.5} />
+                </button>
               </div>
-              <span
-                className={`text-[9px] font-medium tracking-[0.1em] uppercase mt-1.5 transition-all duration-300 ${
-                  isActive
-                    ? "text-foreground opacity-100"
-                    : "text-foreground/40 opacity-70"
-                }`}
-              >
-                {item.name}
-              </span>
-            </>
-          );
 
-          return item.action ? (
-            <button
-              key={index}
-              onClick={item.action}
-              className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
-            >
-              {content}
-            </button>
-          ) : (
-            <Link
-              key={index}
-              href={item.path}
-              className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
-            >
-              {content}
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+              <div className="flex flex-col py-2">
+                {user?.role === "admin" ? (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsProfileModalOpen(false)}
+                    className="flex items-center gap-3 px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-colors"
+                  >
+                    <ShieldCheck
+                      className="w-[18px] h-[18px]"
+                      strokeWidth={1.5}
+                    />
+                    Atlas Admin
+                  </Link>
+                ) : (
+                  <Link
+                    href="/my-dashboard"
+                    onClick={() => setIsProfileModalOpen(false)}
+                    className="flex items-center gap-3 px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-colors"
+                  >
+                    <LayoutDashboard
+                      className="w-[18px] h-[18px]"
+                      strokeWidth={1.5}
+                    />
+                    My Dashboard
+                  </Link>
+                )}
+
+                <div className="w-full h-[1px] bg-border/10 my-1"></div>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-6 py-4 text-[12px] font-bold uppercase tracking-[0.15em] text-red-500/80 hover:text-red-600 hover:bg-red-500/10 transition-colors w-full text-left cursor-pointer"
+                >
+                  <LogOut className="w-[18px] h-[18px]" strokeWidth={1.5} />
+                  Logout
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <nav
+        className={`md:hidden fixed bottom-0 left-0 right-0 z-[70] bg-background/85 backdrop-blur-2xl border-t border-border/30 transition-transform duration-500 ease-[0.22,1,0.36,1] ${
+          isVisible ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <div className="flex items-center justify-around h-[72px] pb-safe relative px-2">
+          {navItems.map((item, index) => {
+            const Icon = item.icon;
+            const isActive =
+              pathname === item.path ||
+              (item.name === "Profile" && isProfileModalOpen) ||
+              (item.name === "Profile" && pathname.includes(profilePath));
+
+            const content = (
+              <>
+                <div
+                  className={`absolute top-0 left-1/2 -translate-x-1/2 h-[2px] bg-foreground transition-all duration-500 ease-out rounded-b-full ${
+                    isActive ? "w-6 opacity-100" : "w-0 opacity-0"
+                  }`}
+                ></div>
+                <div className="relative mt-1">
+                  {mounted &&
+                  item.name === "Profile" &&
+                  isAuthenticated &&
+                  user?.image ? (
+                    <div
+                      className={`relative w-[22px] h-[22px] rounded-full overflow-hidden transition-all duration-500 ease-[0.22,1,0.36,1] ${
+                        isActive
+                          ? "scale-110 translate-y-[-2px] border border-foreground"
+                          : "border border-border/40 group-hover:border-foreground/50"
+                      }`}
+                    >
+                      <Image
+                        src={user.image}
+                        alt={user.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <Icon
+                      className={`w-[22px] h-[22px] transition-all duration-500 ease-[0.22,1,0.36,1] ${
+                        isActive
+                          ? "text-foreground scale-110 translate-y-[-2px]"
+                          : "text-foreground/40 group-hover:text-foreground/70"
+                      }`}
+                      strokeWidth={1.5}
+                    />
+                  )}
+
+                  {mounted && item.name === "Cart" && totalCartItems > 0 && (
+                    <span className="absolute -top-1.5 -right-2.5 bg-foreground text-background text-[9px] font-semibold flex items-center justify-center min-w-[16px] h-[16px] rounded-full px-1 shadow-sm transition-transform duration-300">
+                      {totalCartItems}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={`text-[9px] font-medium tracking-[0.1em] uppercase mt-1.5 transition-all duration-300 ${
+                    isActive
+                      ? "text-foreground opacity-100"
+                      : "text-foreground/40 opacity-70"
+                  }`}
+                >
+                  {item.name}
+                </span>
+              </>
+            );
+
+            return item.action ? (
+              <button
+                key={index}
+                onClick={item.action}
+                className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
+              >
+                {content}
+              </button>
+            ) : (
+              <Link
+                key={index}
+                href={item.path}
+                className="flex flex-col items-center justify-center w-full h-full relative group cursor-pointer"
+              >
+                {content}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
