@@ -56,3 +56,13 @@ export const getTestimonials = async () => {
     return [];
   }
 };
+
+export const getFaqs = async () => {
+  try {
+    const res = await api.get("/faqs");
+    return res.data.success ? res.data.faqs : [];
+  } catch (error) {
+    console.error("Error fetching faqs:", error);
+    return [];
+  }
+};

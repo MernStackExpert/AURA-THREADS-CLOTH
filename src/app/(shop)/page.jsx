@@ -3,11 +3,13 @@ import TopCategories from "@/components/shop/TopCategories";
 import DynamicProductSections from "@/components/shop/DynamicProductSections";
 import PromotionalBottomBanner from "@/components/shop/PromotionalBottomBanner";
 import CustomerReviews from "@/components/shop/CustomerReviews";
+import FAQSection from "@/components/shop/FAQSection";
 import {
   getBanners,
   getTopCategories,
   getHomepageSections,
   getTestimonials,
+  getFaqs,
 } from "@/services/shopService";
 
 export const metadata = {
@@ -24,6 +26,7 @@ export default async function HomePage() {
     topCategories,
     homepageSections,
     testimonials,
+    faqs,
   ] = await Promise.all([
     getBanners("main-banner"),
     getBanners("side-banner"),
@@ -31,6 +34,7 @@ export default async function HomePage() {
     getTopCategories(),
     getHomepageSections(),
     getTestimonials(),
+    getFaqs(),
   ]);
 
   return (
@@ -50,6 +54,8 @@ export default async function HomePage() {
       {testimonials && testimonials.length > 0 && (
         <CustomerReviews testimonials={testimonials} />
       )}
+
+      {faqs && faqs.length > 0 && <FAQSection faqs={faqs} />}
     </div>
   );
 }
