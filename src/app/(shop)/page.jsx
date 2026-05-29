@@ -6,6 +6,7 @@ import {
   getTopCategories,
   getHomepageSections,
 } from "@/services/shopService";
+import PromotionalBottomBanner from "@/components/shop/PromotionalBottomBanner";
 
 export const metadata = {
   title: "Aura Threads | Premium Clothing Brand",
@@ -14,10 +15,11 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [mainBanners, sideBanners, topCategories, homepageSections] =
+  const [mainBanners, sideBanners,bottomBanners, topCategories, homepageSections] =
     await Promise.all([
       getBanners("main-banner"),
       getBanners("side-banner"),
+      getBanners("bottom-banner"),
       getTopCategories(),
       getHomepageSections(),
     ]);
@@ -27,6 +29,9 @@ export default async function HomePage() {
       <HeroSection mainBanners={mainBanners} sideBanners={sideBanners} />
       <TopCategories categories={topCategories} />
       <DynamicProductSections sections={homepageSections} />
+      {mainBanners && mainBanners.length > 0 && (
+         <PromotionalBottomBanner banners={mainBanners} />
+      )}
     </div>
   );
 }
