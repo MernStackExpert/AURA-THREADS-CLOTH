@@ -8,18 +8,17 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function PromotionalBottomBanner({ banners }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
-  // Auto-slide logic
+  // Auto-slide logic (Hover pause removed)
   useEffect(() => {
-    if (!banners || banners.length <= 1 || isHovered) return;
+    if (!banners || banners.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
     }, 6000); // 6 seconds for a slower, more luxurious feel
 
     return () => clearInterval(timer);
-  }, [banners, isHovered]);
+  }, [banners]);
 
   const handleNext = () => {
     if (!banners || banners.length <= 1) return;
@@ -37,11 +36,7 @@ export default function PromotionalBottomBanner({ banners }) {
     <section className="w-full py-10 md:py-24 bg-background">
       {/* Desktop: my-container (Max-width), Mobile: Full width */}
       <div className="w-full md:my-container mx-auto">
-        <div
-          className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden group md:border md:border-border/20"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden group md:border md:border-border/20">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
