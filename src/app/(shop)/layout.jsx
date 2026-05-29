@@ -1,8 +1,8 @@
 import Navbar from "@/components/shop/Navbar";
 import BottomNav from "@/components/shop/BottomNav";
 import Modals from "@/components/shop/Modals";
-import Footer from "@/components/shared/Footer";
 import { getSettings, getCategories } from "@/services/shopService";
+import Footer from "@/components/shop/Footer";
 
 export async function generateMetadata() {
   const settings = await getSettings();
