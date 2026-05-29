@@ -38,12 +38,21 @@ export const getTopCategories = async () => {
   }
 };
 
-
 export const getHomepageSections = async () => {
   try {
-    const response = await api.get('/sections/homepage');
+    const response = await api.get("/sections/homepage");
     return response.data?.data || [];
   } catch (error) {
+    return [];
+  }
+};
+
+export const getTestimonials = async () => {
+  try {
+    const res = await api.get("/testimonials");
+    return res.data.success ? res.data.testimonials : [];
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
     return [];
   }
 };

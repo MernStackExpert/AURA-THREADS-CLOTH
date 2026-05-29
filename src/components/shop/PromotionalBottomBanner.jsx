@@ -9,13 +9,12 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 export default function PromotionalBottomBanner({ banners }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Auto-slide logic (Hover pause removed)
   useEffect(() => {
     if (!banners || banners.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
-    }, 6000); // 6 seconds for a slower, more luxurious feel
+    }, 6000); 
 
     return () => clearInterval(timer);
   }, [banners]);
@@ -34,7 +33,6 @@ export default function PromotionalBottomBanner({ banners }) {
 
   return (
     <section className="w-full py-10 md:py-24 bg-background">
-      {/* Desktop: my-container (Max-width), Mobile: Full width */}
       <div className="w-full md:my-container mx-auto">
         <div className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden group md:border md:border-border/20">
           <AnimatePresence mode="wait">
@@ -46,7 +44,6 @@ export default function PromotionalBottomBanner({ banners }) {
               transition={{ duration: 1, ease: "easeInOut" }}
               className="absolute inset-0 w-full h-full"
             >
-              {/* Ken Burns Effect (Slow Zoom In) */}
               <motion.div
                 initial={{ scale: 1 }}
                 animate={{ scale: 1.08 }}
@@ -61,12 +58,10 @@ export default function PromotionalBottomBanner({ banners }) {
                   className="object-cover object-center"
                   quality={100}
                 />
-                {/* Dual Gradient for perfect text readability and mood */}
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40"></div>
               </motion.div>
 
-              {/* Luxury Inner Frame (Only visible on md and up) */}
               <div className="hidden md:block absolute inset-6 lg:inset-8 border border-white/20 pointer-events-none z-10"></div>
 
               {/* Content Container */}
@@ -111,7 +106,6 @@ export default function PromotionalBottomBanner({ banners }) {
             </motion.div>
           </AnimatePresence>
 
-          {/* Luxury Navigation Arrows */}
           {banners.length > 1 && (
             <>
               <button
@@ -129,7 +123,6 @@ export default function PromotionalBottomBanner({ banners }) {
                 <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
               </button>
 
-              {/* Minimalist Pagination Indicators */}
               <div className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
                 {banners.map((_, index) => (
                   <button
