@@ -11,6 +11,7 @@ import {
   getTestimonials,
   getFaqs,
 } from "@/services/shopService";
+import TrustFeatures from "@/components/shop/TrustFeatures";
 
 export const metadata = {
   title: "Aura Threads | Premium Clothing Brand",
@@ -56,6 +57,8 @@ export default async function HomePage() {
       )}
 
       {faqs && faqs.length > 0 && <FAQSection faqs={faqs} />}
+
+      <TrustFeatures />
     </div>
   );
 }
